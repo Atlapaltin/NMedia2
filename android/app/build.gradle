@@ -39,6 +39,7 @@ android {
             manifestPlaceholders.usesCleartextTraffic = true
         }
     }
+    namespace 'ru.netology.nmedia'
 }
 
 dependencies {

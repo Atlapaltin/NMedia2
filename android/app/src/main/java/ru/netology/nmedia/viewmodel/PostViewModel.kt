@@ -44,7 +44,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             } catch (e: IOException) {
                 // Получена ошибка
                 FeedModel(error = true)
-            }.also(_data::postValue)
+            } .also(_data::postValue)
         }
     }
 
@@ -75,6 +75,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun removeById(id: Long) {
+
         thread {
             // Оптимистичная модель
             val old = _data.value?.posts.orEmpty()
