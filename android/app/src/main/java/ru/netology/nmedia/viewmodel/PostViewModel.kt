@@ -70,9 +70,42 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(content = text)
     }
 
-    fun likeById(id: Long) {
-        thread { repository.likeById(id) }
+    fun likeById(id: Long, likeRemoved: Boolean) {
+        thread {
+            // Оптимистичная модель
+            val oldPosts = _data.value?.posts.orEmpty()
+            val updatedPosts = getPostsAfterLike(id, likeRemoved, oldPosts)
+            _data.postValue(FeedModel(posts = updatedPosts))
+            try {
+                // После получения данных обновляем пост
+                val updatedPost = repository.likeById(id, likeRemoved)
+                val posts = _data.value?.posts.orEmpty().map { post ->
+                    if (post.id == updatedPost.id) {
+                        updatedPost
+                    } else {
+                        post
+                    }
+                }
+                FeedModel(posts = posts, empty = posts.isEmpty())
+            } catch (e: IOException) {
+                // Возникла ошибка
+                FeedModel(error = true)
+            }.also(_data::postValue)
+        }
     }
+
+    private fun getPostsAfterLike(id: Long, isDislike: Boolean, oldPosts: List<Post>) =
+        oldPosts.map { post ->
+            if (post.id == id) {
+                if (isDislike) {
+                    post.copy(likedByMe = false, likes = post.likes - 1)
+                } else {
+                    post.copy(likedByMe = true, likes = post.likes + 1)
+                }
+            } else {
+                post
+            }
+        }
 
     fun removeById(id: Long) {
 
