@@ -34,7 +34,6 @@ class PostRepositoryImpl: PostRepository {
                 gson.fromJson(it, typeToken.type)
             }
     }
-
     override fun likeById(id: Long, likeRemoved: Boolean): Post {
         val reqBuilder = if (likeRemoved) {
             Request.Builder()
