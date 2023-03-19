@@ -18,11 +18,10 @@ class PostRepositoryImpl : PostRepository {
     private val typeToken = object : TypeToken<List<Post>>() {}
 
     companion object {
-        private const val BASE_URL = "http://192.168.0.104:9090/"
+        const val BASE_URL = "http://192.168.0.104:9090/" //http://10.0.2.2:9999
         private val jsonType = "application/json".toMediaType()
     }
 
-    //http://10.0.2.2:9999
     override fun getAll(): List<Post> {
         val request: Request = Request.Builder()
             .url("${BASE_URL}/api/slow/posts")

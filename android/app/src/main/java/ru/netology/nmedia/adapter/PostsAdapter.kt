@@ -1,6 +1,7 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +9,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
+import com.bumptech.glide.Glide
+import ru.netology.nmedia.repository.PostRepositoryImpl
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -71,6 +75,34 @@ class PostViewHolder(
 
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
+            }
+
+            if (post.authorAvatar.isNotBlank()) {
+                val url = "${PostRepositoryImpl.BASE_URL}/avatars/${post.authorAvatar}"
+                Glide.with(avatar)
+                    .load(url)
+                    .placeholder(R.drawable.ic_loading_100dp)
+                    .error(R.drawable.ic_error_100dp)
+                    .timeout(10_000)
+                    .circleCrop()
+                    .into(avatar)
+            } else {
+                avatar.setImageResource(R.drawable.ic_error_100dp)
+            }
+
+            val attachment = post.attachment
+            if (attachment != null && attachment.type == AttachmentType.IMAGE) {
+                val url = "${PostRepositoryImpl.BASE_URL}/images/${attachment.url}"
+                Glide.with(attachedImage)
+                    .load(url)
+                    .placeholder(R.drawable.ic_loading_100dp)
+                    .error(R.drawable.ic_error_100dp)
+                    .timeout(10_000)
+                    .into(attachedImage)
+                attachedImage.visibility = View.VISIBLE
+                attachedImage.contentDescription = attachment.description
+            } else {
+                attachedImage.visibility = View.GONE
             }
         }
     }

@@ -6,5 +6,6 @@
     <dimen name="checkbox_padding_start">8dp</dimen>
     <dimen name="icon_button_padding">12dp</dimen>
     <dimen name="icon_button_min_size">48dp</dimen>
+    <dimen name="video_size">256dp</dimen>
 </resources>
 
