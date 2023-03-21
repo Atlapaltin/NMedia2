@@ -22,63 +22,6 @@ class PostRepositoryImpl : PostRepository {
         private val jsonType = "application/json".toMediaType()
     }
 
-    override fun getAll(): List<Post> {
-        val request: Request = Request.Builder()
-            .url("${BASE_URL}/api/slow/posts")
-            .build()
-
-        return client.newCall(request)
-            .execute()
-            .let { it.body?.string() ?: throw RuntimeException("body is null") }
-            .let {
-                gson.fromJson(it, typeToken.type)
-            }
-    }
-
-    override fun likeById(id: Long, likeRemoved: Boolean): Post {
-        val reqBuilder = if (likeRemoved) {
-            Request.Builder()
-                .delete()
-        } else {
-            Request.Builder()
-                .post("".toRequestBody())
-        }
-
-        val request: Request =
-            reqBuilder
-                .url("${BASE_URL}/api/posts/${id}/likes")
-                .build()
-
-        return client.newCall(request)
-            .execute()
-            .let { it.body?.string() ?: throw RuntimeException("body is null") }
-            .let {
-                gson.fromJson(it, Post::class.java)
-            }
-    }
-
-    override fun save(post: Post) {
-        val request: Request = Request.Builder()
-            .post(gson.toJson(post).toRequestBody(jsonType))
-            .url("${BASE_URL}/api/slow/posts")
-            .build()
-
-        client.newCall(request)
-            .execute()
-            .close()
-    }
-
-    override fun removeById(id: Long) {
-        val request: Request = Request.Builder()
-            .delete()
-            .url("${BASE_URL}/api/slow/posts/$id")
-            .build()
-
-        client.newCall(request)
-            .execute()
-            .close()
-    }
-
     override fun getAllAsync(callback: PostRepository.RepositoryCallback<List<Post>>) {
         val request: Request = Request.Builder()
             .url("${BASE_URL}/api/slow/posts")
@@ -98,7 +41,6 @@ class PostRepositoryImpl : PostRepository {
                         callback.onError(e)
                     }
                 }
-
             })
     }
 
@@ -171,5 +113,21 @@ class PostRepositoryImpl : PostRepository {
                     //do nothing
                 }
             })
+    }
+
+    override fun getAll(): List<Post> {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun likeById(id: Long, likeRemoved: Boolean): Post {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun save(post: Post) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun removeById(id: Long) {
+        throw UnsupportedOperationException("Not implemented")
     }
 }
